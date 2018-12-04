@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TodoApi.Models
 {
-    public class TodoRepository : ITodoRepository
+    public class TodoRepository: ITodoRepository
     {
         private static ConcurrentDictionary<string, TodoItem> _todos =
               new ConcurrentDictionary<string, TodoItem>();

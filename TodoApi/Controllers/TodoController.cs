@@ -11,6 +11,7 @@ namespace TodoApi.Controllers
     [Route("api/[controller]")]
     public class TodoController : Controller
     {
+        // Create
         [HttpPost]
         public IActionResult Create([FromBody] TodoItem item)
         {
@@ -22,6 +23,7 @@ namespace TodoApi.Controllers
             return CreatedAtRoute("GetTodo", new { id = item.Key }, item);
         }
 
+        // Update
         [HttpPatch("{id}")]
         public IActionResult Update([FromBody] TodoItem item, string id)
         {
@@ -42,6 +44,7 @@ namespace TodoApi.Controllers
             return new NoContentResult();
         }
 
+        // Delete
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
@@ -70,6 +73,7 @@ namespace TodoApi.Controllers
             return TodoItems.GetAll();
         }
 
+        // Read
         [HttpGet("{id}", Name = "GetTodo")]
         public IActionResult GetById(string id)
         {
