@@ -32,7 +32,7 @@ namespace TodoApi.Controllers
                 return BadRequest();
             }
 
-            var todo = TodoItems.Find(id);
+            var todo = TodoItems.TodoItemsDb.Find(id);
             if (todo == null)
             {
                 return NotFound();
@@ -48,7 +48,7 @@ namespace TodoApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var todo = TodoItems.Find(id);
+            var todo = TodoItems.TodoItemsDb.Find(id);
             if (todo == null)
             {
                 return NotFound();
@@ -60,24 +60,24 @@ namespace TodoApi.Controllers
         }
 
 
-        public TodoController(ITodoRepository todoItems)
+        public TodoController(ApplicationContext todoItems)
         {
             TodoItems = todoItems;
         }
 
-        public ITodoRepository TodoItems { get; set; }
+        public ApplicationContext TodoItems { get; set; }
 
 
         public IEnumerable<TodoItem> GetAll()
         {
-            return TodoItems.GetAll();
+            return TodoItems.TodoItemsDb.ToList();
         }
 
         // Read
         [HttpGet("{id}", Name = "GetTodo")]
         public IActionResult GetById(string id)
         {
-            var item = TodoItems.Find(id);
+            var item = TodoItems.TodoItemsDb.Find(id);
             if (item == null)
             {
                 return NotFound();

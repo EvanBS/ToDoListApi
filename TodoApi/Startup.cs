@@ -45,16 +45,16 @@ namespace TodoApi
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
+
+            if (env.IsProduction() || env.IsStaging() || env.IsEnvironment("Staging_2"))
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
-            app.UseAuthentication();
+            app.UseCookiePolicy();
 
             app.UseMvc(routes =>
             {
