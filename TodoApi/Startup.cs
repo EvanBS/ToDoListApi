@@ -26,8 +26,13 @@ namespace TodoApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = "Server=(localdb)\\mssqllocaldb;Database=rolestoredb;Trusted_Connection=True;";
-            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connection));
+            //string connection = "Server=(localdb)\\mssqllocaldb;Database=DoDB;Trusted_Connection=True;";
+            //services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connection));
+
+
+            services.AddDbContext<ApplicationContext>(options =>
+            options.UseSqlServer("Data Source=DESKTOP-BI76BQN;Initial Catalog=DoDB;Integrated Security=True"));
+
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>

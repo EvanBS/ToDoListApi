@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TodoApi.Models;
@@ -13,6 +14,7 @@ namespace TodoApi.Controllers
     {
         // Create
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public IActionResult Create([FromBody] TodoItem item)
         {
             if (item == null)
