@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TodoApi.Migrations
 {
-    public partial class datamigration : Migration
+    public partial class DBmigrat : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,21 +18,6 @@ namespace TodoApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TodoItemsDb",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Key = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    IsComplete = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TodoItemsDb", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -56,6 +41,28 @@ namespace TodoApi.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TodoItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Key = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    IsComplete = table.Column<bool>(nullable: false),
+                    UserId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TodoItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TodoItems_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Roles",
                 columns: new[] { "Id", "Name" },
@@ -69,13 +76,17 @@ namespace TodoApi.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Email", "Password", "RoleId" },
-                values: new object[,]
-                {
-                    { 1, "admin@mail.ru", "123456", 1 },
-                    { 2, "mail2@gmail.com", "qwerty", 2 },
-                    { 3, "mail3@gmail.com", "hardpass", 2 },
-                    { 4, "mail4@gmail.com", "veryhardpass", 2 }
-                });
+                values: new object[] { 1, "admin@mail.ru", "123456", 1 });
+
+            migrationBuilder.InsertData(
+                table: "TodoItems",
+                columns: new[] { "Id", "IsComplete", "Key", "Name", "UserId" },
+                values: new object[] { 1, false, null, "Drink beer", 1 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TodoItems_UserId",
+                table: "TodoItems",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
@@ -86,7 +97,7 @@ namespace TodoApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "TodoItemsDb");
+                name: "TodoItems");
 
             migrationBuilder.DropTable(
                 name: "Users");

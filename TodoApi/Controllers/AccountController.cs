@@ -56,8 +56,7 @@ namespace TodoApi.Controllers
             return View();
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginModel model)
+        public async Task<ActionResult> Login([FromBody]LoginModel model)
         {
             if (ModelState.IsValid)
             {

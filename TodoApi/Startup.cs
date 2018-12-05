@@ -31,7 +31,7 @@ namespace TodoApi
 
 
             services.AddDbContext<ApplicationContext>(options =>
-            options.UseSqlServer("Data Source=DESKTOP-BI76BQN;Initial Catalog=DoDB;Integrated Security=True"));
+            options.UseSqlServer("Data Source=DESKTOP-BI76BQN;Initial Catalog=DoDBAPI;Integrated Security=True"));
 
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

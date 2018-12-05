@@ -1,0 +1,12 @@
+﻿@model IEnumerable<TodoApi.Models.TodoItem>
+@{
+    ViewData["Title"] = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Get All Tasks</h2>
+
+@foreach(var task in Model)
+{
+    <p>@task.Name</p>
+}

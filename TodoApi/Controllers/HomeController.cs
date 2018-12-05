@@ -10,8 +10,11 @@ namespace TodoApi.Controllers
 {
     public class HomeController : Controller
     {
+        ApplicationContext context { get; set; }
+
         public IActionResult Index()
         {
+            //return Content(context.TodoItemsDb.Count().ToString());
             return View();
         }
 

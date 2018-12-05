@@ -10,8 +10,8 @@ using TodoApi.Models;
 namespace TodoApi.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20181205093654_datamigration")]
-    partial class datamigration
+    [Migration("20181205224252_DBmigrat")]
+    partial class DBmigrat
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,9 +51,17 @@ namespace TodoApi.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<int>("UserId");
+
                     b.HasKey("Id");
 
-                    b.ToTable("TodoItemsDb");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TodoItems");
+
+                    b.HasData(
+                        new { Id = 1, IsComplete = false, Name = "Drink beer", UserId = 1 }
+                    );
                 });
 
             modelBuilder.Entity("TodoApi.Models.User", b =>
@@ -75,11 +83,16 @@ namespace TodoApi.Migrations
                     b.ToTable("Users");
 
                     b.HasData(
-                        new { Id = 1, Email = "admin@mail.ru", Password = "123456", RoleId = 1 },
-                        new { Id = 2, Email = "mail2@gmail.com", Password = "qwerty", RoleId = 2 },
-                        new { Id = 3, Email = "mail3@gmail.com", Password = "hardpass", RoleId = 2 },
-                        new { Id = 4, Email = "mail4@gmail.com", Password = "veryhardpass", RoleId = 2 }
+                        new { Id = 1, Email = "admin@mail.ru", Password = "123456", RoleId = 1 }
                     );
+                });
+
+            modelBuilder.Entity("TodoApi.Models.TodoItem", b =>
+                {
+                    b.HasOne("TodoApi.Models.User", "User")
+                        .WithMany("TodoItems")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("TodoApi.Models.User", b =>
