@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TodoApi.Models;
 
 namespace TodoApi.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20181206131522_ListMigrationOnModelCreating")]
+    partial class ListMigrationOnModelCreating
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,11 +55,7 @@ namespace TodoApi.Migrations
                     b.ToTable("TodoItems");
 
                     b.HasData(
-                        new { Id = 1, IsComplete = false, Name = "Drink beer", UserId = 1 },
-                        new { Id = 2, IsComplete = true, Name = "Make kursach", UserId = 1 },
-                        new { Id = 3, IsComplete = false, Name = "Make test task", UserId = 2 },
-                        new { Id = 4, IsComplete = true, Name = "Play quantum break", UserId = 2 },
-                        new { Id = 5, IsComplete = false, Name = "Learn web api", UserId = 2 }
+                        new { Id = 1, IsComplete = false, Name = "Drink beer", UserId = 1 }
                     );
                 });
 
@@ -80,8 +78,7 @@ namespace TodoApi.Migrations
                     b.ToTable("Users");
 
                     b.HasData(
-                        new { Id = 1, Email = "admin@mail.ru", Password = "123456", RoleId = 1 },
-                        new { Id = 2, Email = "somemail@gmail.com", Password = "qwertyuiop", RoleId = 2 }
+                        new { Id = 1, Email = "admin@mail.ru", Password = "123456", RoleId = 1 }
                     );
                 });
 

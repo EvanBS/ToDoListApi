@@ -9,15 +9,13 @@ namespace TodoApi.Models
 {
     public class TodoItem
     {
-        [Key]
         public int Id { get; set; }
+        public int UserId { get; set; }
+        public virtual User User { get; set; }
 
         public string Key { get; set; }
         public string Name { get; set; }
         public bool IsComplete { get; set; }
 
-        [ForeignKey("User")]
-        public int UserId { get; set; }
-        public virtual User User { get; set; }
-    }
+        }
 }

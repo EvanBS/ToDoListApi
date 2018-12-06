@@ -15,7 +15,7 @@ namespace TodoApi.Models
         public string Password { get; set; }
 
         
-        public ICollection<TodoItem> TodoItems { get; set; }
+        public virtual List<TodoItem> TodoItems { get; set; }
 
         public int? RoleId { get; set; }
         public Role Role { get; set; }

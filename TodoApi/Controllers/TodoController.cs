@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using TodoApi.Models;
 
@@ -92,31 +93,20 @@ namespace TodoApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Content(context.TodoItems.Count().ToString());
-
-
             if (Request.Headers["userId"] != StringValues.Empty && Request.Headers["userId"].ToString() != String.Empty)
             {
                 int userId = Convert.ToInt32(Request.Headers["userId"]);
                 
-                User user = context.Users.Find(userId);
+                User user = context.Users.Include(u => u.TodoItems).Where(u => u.Id == userId).FirstOrDefault();
+
                 if (user != null)
                 {
                     return View(user.TodoItems.ToList());
                 }
 
-                return Content(Request.Headers["userId"]);
             }
 
             return Unauthorized();
-
-            //return View(TodoItems.TodoItemsDb.ToList());
-
-            //return Unauthorized();
-            //string counts = Request.Headers.Count.ToString();
-
-            //throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            //return Content("hdrs " + rse + '\n' + "hdrs " + counts);
         }
 
         // Read

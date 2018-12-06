@@ -26,12 +26,13 @@ namespace TodoApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //string connection = "Server=(localdb)\\mssqllocaldb;Database=DoDB;Trusted_Connection=True;";
-            //services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connection));
-
-
+            
             services.AddDbContext<ApplicationContext>(options =>
             options.UseSqlServer("Data Source=DESKTOP-BI76BQN;Initial Catalog=DoDBAPI;Integrated Security=True"));
+            // opt.UseInMemoryDatabase()
+            services.AddDbContext<ApplicationContext>(options =>
+            options.UseInMemoryDatabase("DoDBAPI"));
+
 
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -56,6 +57,8 @@ namespace TodoApi
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
+            app.UseMvc();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
