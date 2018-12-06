@@ -30,6 +30,11 @@ namespace TodoApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new { Id = 1, Name = "admin" },
+                        new { Id = 2, Name = "user" }
+                    );
                 });
 
             modelBuilder.Entity("TodoApi.Models.TodoItem", b =>

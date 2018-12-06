@@ -34,7 +34,7 @@ namespace TodoApi.Models
             Role adminRole = new Role { Id = 1, Name = adminRoleName };
             Role userRole = new Role { Id = 2, Name = userRoleName };
 
-
+            modelBuilder.Entity<Role>().HasData(new Role[] { adminRole, userRole });
 
             var admin = new User
             {

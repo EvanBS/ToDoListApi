@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
+using System;
+using System.Linq;
 using TodoApi.Models;
 
 namespace TodoApi.Controllers
@@ -18,6 +12,15 @@ namespace TodoApi.Controllers
     [ApiController]
     public class TodoController : Controller
     {
+        private bool isNotEmptyHeader()
+        {
+            if (Request.Headers["userId"] != StringValues.Empty && Request.Headers["userId"].ToString() != String.Empty)
+            {
+                return true;
+            }
+            return false;
+        }
+
         // Create
         [HttpPost]
         public IActionResult Create([FromBody] TodoItem item)
@@ -27,8 +30,7 @@ namespace TodoApi.Controllers
                 return BadRequest();
             }
 
-
-            if (Request.Headers["userId"] != StringValues.Empty && Request.Headers["userId"].ToString() != String.Empty)
+            if (isNotEmptyHeader())
             {
                 int UserId = Convert.ToInt32(Request.Headers["userId"]);
 
@@ -36,17 +38,23 @@ namespace TodoApi.Controllers
 
                 if (user != null)
                 {
-                    user.TodoItems.Add(item);
+
+                    item.UserId = user.Id;
+                    context.TodoItems.Add(item);
+                    context.SaveChanges();
+                }
+                else
+                {
+                    return Unauthorized();
                 }
 
             }
 
-
-            return CreatedAtRoute("GetTodo", new { id = item.Key }, item);
+            return StatusCode(201);
         }
 
         // Update
-        [HttpPatch("{id}")]
+        [HttpPatch]
         public IActionResult Update([FromBody] TodoItem item, string id)
         {
             if (item == null)
@@ -54,33 +62,78 @@ namespace TodoApi.Controllers
                 return BadRequest();
             }
 
-            var todo = context.TodoItems.Find(id);
-            if (todo == null)
+            if (isNotEmptyHeader())
             {
-                return NotFound();
+                int ItemId = Convert.ToInt32(id);
+
+                var todo = context.TodoItems.Find(ItemId);
+
+                if (todo == null)
+                {
+                    return NotFound();
+                }
+
+                todo.Name = item.Name;
+                todo.IsComplete = item.IsComplete;
+
+                context.TodoItems.Update(todo);
+                context.SaveChanges();
+
+                return new NoContentResult();
+
             }
 
-            item.Key = todo.Key;
+            return Unauthorized();
+        }
 
-            context.Update(item);
-            return new NoContentResult();
+        [HttpPatch("SetStatus")]
+        public IActionResult ChangeStatus(bool newStatus, string id)
+        {
+            if (isNotEmptyHeader())
+            {
+                int ItemId = Convert.ToInt32(id);
+
+                var todo = context.TodoItems.Find(ItemId);
+
+                if (todo == null)
+                {
+                    return NotFound();
+                }
+
+                todo.IsComplete = newStatus;
+
+                context.TodoItems.Update(todo);
+                context.SaveChanges();
+
+                return new NoContentResult();
+
+            }
+
+            return Unauthorized();
         }
 
         // Delete
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public IActionResult Delete(string id)
         {
-            var todo = context.TodoItems.Find(id);
-            if (todo == null)
+            if (isNotEmptyHeader())
             {
-                return NotFound();
+                var todo = context.TodoItems.Find(Convert.ToInt32(id));
+                if (todo == null)
+                {
+                    return NotFound();
+                }
+
+                context.TodoItems.Remove(todo);
+                context.SaveChanges();
+
+                return new NoContentResult();
+
             }
+            return Unauthorized();
 
-            context.Remove(id);
 
-            return new NoContentResult();
         }
-
 
         public TodoController(ApplicationContext context)
         {
@@ -88,37 +141,50 @@ namespace TodoApi.Controllers
         }
 
         public ApplicationContext context { get; set; }
-        
 
+        // Read
         [HttpGet]
         public IActionResult GetAll()
         {
-            if (Request.Headers["userId"] != StringValues.Empty && Request.Headers["userId"].ToString() != String.Empty)
+            if (isNotEmptyHeader())
             {
                 int userId = Convert.ToInt32(Request.Headers["userId"]);
-                
+
                 User user = context.Users.Include(u => u.TodoItems).Where(u => u.Id == userId).FirstOrDefault();
 
                 if (user != null)
                 {
                     return View(user.TodoItems.ToList());
                 }
-
             }
 
             return Unauthorized();
         }
 
-        // Read
-        [HttpGet("{id}", Name = "GetTodo")]
-        public IActionResult GetById(string id)
+
+
+        
+        [HttpGet("admin")]
+        public IActionResult GetAllAdmin()
         {
-            var item = context.TodoItems.Find(id);
-            if (item == null)
+            if (isNotEmptyHeader())
             {
-                return NotFound();
+                int userId = Convert.ToInt32(Request.Headers["userId"]);
+
+                User user = context.Users.Include(u => u.TodoItems).Where(u => u.Id == userId).FirstOrDefault();
+
+                if (user.RoleId != 1) return StatusCode(403);
+
+                var todoItems = context.TodoItems.ToList();
+
+                if (todoItems != null)
+                {
+                    return View(todoItems);
+                }
             }
-            return new ObjectResult(item);
+
+            return Unauthorized();
         }
+        
     }
 }

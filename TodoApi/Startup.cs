@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,14 +19,8 @@ namespace TodoApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            
             services.AddDbContext<ApplicationContext>(options =>
-            options.UseSqlServer("Data Source=DESKTOP-BI76BQN;Initial Catalog=DoDBAPI;Integrated Security=True"));
-            // opt.UseInMemoryDatabase()
-            services.AddDbContext<ApplicationContext>(options =>
-            options.UseInMemoryDatabase("DoDBAPI"));
-
-
+            options.UseSqlServer("Data Source=DESKTOP-BI76BQN;Initial Catalog=TODODB;Integrated Security=True"));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>

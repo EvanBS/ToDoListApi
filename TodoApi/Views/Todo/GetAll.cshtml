@@ -1,12 +1,11 @@
 ﻿@model IEnumerable<TodoApi.Models.TodoItem>
 @{
     ViewData["Title"] = "GetAll";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Get All Tasks</h2>
 
-@foreach(var task in Model)
+@foreach (var task in Model)
 {
-    <p>@task.Name</p>
+    <p>@task.Name - @task.IsComplete - <a asp-action="Edit" asp-route-id="@task.Id">Edit</a></p>
 }

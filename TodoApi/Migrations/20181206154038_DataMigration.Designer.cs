@@ -10,8 +10,8 @@ using TodoApi.Models;
 namespace TodoApi.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20181206125936_ListMigration")]
-    partial class ListMigration
+    [Migration("20181206154038_DataMigration")]
+    partial class DataMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,6 +32,11 @@ namespace TodoApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new { Id = 1, Name = "admin" },
+                        new { Id = 2, Name = "user" }
+                    );
                 });
 
             modelBuilder.Entity("TodoApi.Models.TodoItem", b =>
@@ -53,6 +58,14 @@ namespace TodoApi.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("TodoItems");
+
+                    b.HasData(
+                        new { Id = 1, IsComplete = false, Name = "Drink beer", UserId = 1 },
+                        new { Id = 2, IsComplete = true, Name = "Make kursach", UserId = 1 },
+                        new { Id = 3, IsComplete = false, Name = "Make test task", UserId = 2 },
+                        new { Id = 4, IsComplete = true, Name = "Play quantum break", UserId = 2 },
+                        new { Id = 5, IsComplete = false, Name = "Learn web api", UserId = 2 }
+                    );
                 });
 
             modelBuilder.Entity("TodoApi.Models.User", b =>
@@ -72,6 +85,11 @@ namespace TodoApi.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new { Id = 1, Email = "admin@mail.ru", Password = "123456", RoleId = 1 },
+                        new { Id = 2, Email = "somemail@gmail.com", Password = "qwertyuiop", RoleId = 2 }
+                    );
                 });
 
             modelBuilder.Entity("TodoApi.Models.TodoItem", b =>

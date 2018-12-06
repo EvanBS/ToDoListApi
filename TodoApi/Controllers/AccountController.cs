@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using TodoApi.Models;
 
 namespace TodoApi.Controllers
@@ -14,15 +12,18 @@ namespace TodoApi.Controllers
     public class AccountController : Controller
     {
         private ApplicationContext _context;
+
         public AccountController(ApplicationContext context)
         {
             _context = context;
         }
+
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
@@ -50,11 +51,13 @@ namespace TodoApi.Controllers
             }
             return View(model);
         }
+
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
+
         [HttpPost]
         public async Task<ActionResult> Login([FromBody]LoginModel model)
         {
@@ -73,6 +76,7 @@ namespace TodoApi.Controllers
             }
             return View(model);
         }
+
         private async Task Authenticate(User user)
         {
             // создаем один claim

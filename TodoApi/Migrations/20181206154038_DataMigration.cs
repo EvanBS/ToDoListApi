@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TodoApi.Migrations
 {
-    public partial class DBmigrat : Migration
+    public partial class DataMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,10 +47,10 @@ namespace TodoApi.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<int>(nullable: false),
                     Key = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
-                    IsComplete = table.Column<bool>(nullable: false),
-                    UserId = table.Column<int>(nullable: false)
+                    IsComplete = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,9 +79,21 @@ namespace TodoApi.Migrations
                 values: new object[] { 1, "admin@mail.ru", "123456", 1 });
 
             migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "Password", "RoleId" },
+                values: new object[] { 2, "somemail@gmail.com", "qwertyuiop", 2 });
+
+            migrationBuilder.InsertData(
                 table: "TodoItems",
                 columns: new[] { "Id", "IsComplete", "Key", "Name", "UserId" },
-                values: new object[] { 1, false, null, "Drink beer", 1 });
+                values: new object[,]
+                {
+                    { 1, false, null, "Drink beer", 1 },
+                    { 2, true, null, "Make kursach", 1 },
+                    { 3, false, null, "Make test task", 2 },
+                    { 4, true, null, "Play quantum break", 2 },
+                    { 5, false, null, "Learn web api", 2 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_TodoItems_UserId",
