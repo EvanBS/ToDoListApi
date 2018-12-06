@@ -23,7 +23,7 @@ namespace TodoApi.Controllers
 
         // Create
         [HttpPost]
-        public IActionResult Create([FromBody] TodoItem item)
+        public async System.Threading.Tasks.Task<IActionResult> Create([FromBody] TodoItem item)
         {
             if (item == null)
             {
@@ -34,14 +34,14 @@ namespace TodoApi.Controllers
             {
                 int UserId = Convert.ToInt32(Request.Headers["userId"]);
 
-                User user = context.Users.Find(UserId);
+                User user = await context.Users.FindAsync(UserId);
 
                 if (user != null)
                 {
 
                     item.UserId = user.Id;
                     context.TodoItems.Add(item);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                 }
                 else
                 {
@@ -55,7 +55,7 @@ namespace TodoApi.Controllers
 
         // Update
         [HttpPatch]
-        public IActionResult Update([FromBody] TodoItem item, string id)
+        public async System.Threading.Tasks.Task<IActionResult> Update([FromBody] TodoItem item, string id)
         {
             if (item == null)
             {
@@ -66,7 +66,7 @@ namespace TodoApi.Controllers
             {
                 int ItemId = Convert.ToInt32(id);
 
-                var todo = context.TodoItems.Find(ItemId);
+                var todo = await context.TodoItems.FindAsync(ItemId);
 
                 if (todo == null)
                 {
@@ -77,7 +77,7 @@ namespace TodoApi.Controllers
                 todo.IsComplete = item.IsComplete;
 
                 context.TodoItems.Update(todo);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 return new NoContentResult();
 
@@ -87,13 +87,13 @@ namespace TodoApi.Controllers
         }
 
         [HttpPatch("SetStatus")]
-        public IActionResult ChangeStatus(bool newStatus, string id)
+        public async System.Threading.Tasks.Task<IActionResult> ChangeStatus(bool newStatus, string id)
         {
             if (isNotEmptyHeader())
             {
                 int ItemId = Convert.ToInt32(id);
 
-                var todo = context.TodoItems.Find(ItemId);
+                var todo = await context.TodoItems.FindAsync(ItemId);
 
                 if (todo == null)
                 {
@@ -103,7 +103,7 @@ namespace TodoApi.Controllers
                 todo.IsComplete = newStatus;
 
                 context.TodoItems.Update(todo);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 return new NoContentResult();
 
@@ -114,18 +114,18 @@ namespace TodoApi.Controllers
 
         // Delete
         [HttpDelete]
-        public IActionResult Delete(string id)
+        public async System.Threading.Tasks.Task<IActionResult> Delete(string id)
         {
             if (isNotEmptyHeader())
             {
-                var todo = context.TodoItems.Find(Convert.ToInt32(id));
+                var todo = await context.TodoItems.FindAsync(Convert.ToInt32(id));
                 if (todo == null)
                 {
                     return NotFound();
                 }
 
                 context.TodoItems.Remove(todo);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 return new NoContentResult();
 
@@ -144,13 +144,13 @@ namespace TodoApi.Controllers
 
         // Read
         [HttpGet]
-        public IActionResult GetAll()
+        public async System.Threading.Tasks.Task<IActionResult> GetAll()
         {
             if (isNotEmptyHeader())
             {
                 int userId = Convert.ToInt32(Request.Headers["userId"]);
 
-                User user = context.Users.Include(u => u.TodoItems).Where(u => u.Id == userId).FirstOrDefault();
+                User user = await context.Users.Include(u => u.TodoItems).Where(u => u.Id == userId).FirstOrDefaultAsync();
 
                 if (user != null)
                 {
@@ -165,13 +165,13 @@ namespace TodoApi.Controllers
 
         
         [HttpGet("admin")]
-        public IActionResult GetAllAdmin()
+        public async System.Threading.Tasks.Task<IActionResult> GetAllAdmin()
         {
             if (isNotEmptyHeader())
             {
                 int userId = Convert.ToInt32(Request.Headers["userId"]);
 
-                User user = context.Users.Include(u => u.TodoItems).Where(u => u.Id == userId).FirstOrDefault();
+                User user = await context.Users.Include(u => u.TodoItems).Where(u => u.Id == userId).FirstOrDefaultAsync();
 
                 if (user.RoleId != 1) return StatusCode(403);
 
